@@ -16,6 +16,8 @@ dotenv.config();
 
 // Initialise the Gemini client with the API key from .env
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+console.log("🤖  Gemini model configured:", GEMINI_MODEL);
 
 // ── System Prompt ───────────────────────────────────────────
 // This is the single most important piece of the AI pipeline.
@@ -69,9 +71,9 @@ export async function analyzeTransactions(rawText) {
     throw new Error("No readable text found in the uploaded file.");
   }
 
-  // Gemini Pro is reliable and available — ideal for structured extraction
+  // Use a supported Gemini model from the installed SDK
   const model = genAI.getGenerativeModel({
-    model: "gemini-pro",
+    model: GEMINI_MODEL,
     // System instruction sets the persistent context/role for the model
     systemInstruction: SYSTEM_PROMPT,
   });

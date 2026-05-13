@@ -8,16 +8,17 @@
 //   • Upload routes now require JWT (handled inside the route)
 // ============================================================
 
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import { connectDB } from "./utils/db.js";
 import authRoutes from "./routes/auth.routes.js";
 import uploadRoutes from "./routes/upload.routes.js";
 import statsRoutes from "./routes/stats.routes.js";
 import { errorHandler } from "./middleware/error.middleware.js";
-
-dotenv.config();
+import { checkEmailConfig, verifyEmailTransporter } from "./utils/email.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -43,6 +44,10 @@ app.use("/api/stats", statsRoutes);
 
 // ── Global Error Handler ─────────────────────────────────────
 app.use(errorHandler);
+
+// Check email configuration after all imports are loaded
+checkEmailConfig();
+verifyEmailTransporter();
 
 app.listen(PORT, () => {
   console.log(`\n🚀  FinTrack API v2 running at http://localhost:${PORT}`);

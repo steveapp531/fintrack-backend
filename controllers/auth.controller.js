@@ -40,10 +40,16 @@ export async function register(req, res, next) {
     await user.setPassword(password);
     await user.save();
 
+    console.log("👤 User registered successfully:", { id: user._id, name, email });
+
     // Send welcome email (non-blocking — don't fail registration if email fails)
-    sendWelcomeEmail(email, name).catch((err) =>
-      console.warn("⚠️  Welcome email failed:", err.message)
-    );
+    console.log("📧 Triggering welcome email for new user:", email);
+    sendWelcomeEmail(email, name).catch((err) => {
+      console.error("❌ Welcome email failed for user:", email, "Error:", err.message);
+      console.error("❌ Full error details:", err);
+    });
+
+    console.log("✅ Registration process completed for:", email);
 
     // Return JWT + profile
     const token = signToken(user._id);
