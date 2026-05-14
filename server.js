@@ -38,6 +38,13 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Increase request timeout for large file processing (10 minutes)
+app.use((req, res, next) => {
+  req.setTimeout(600000); // 10 minutes
+  res.setTimeout(600000); // 10 minutes
+  next();
+});
+
 // ── Routes ───────────────────────────────────────────────────
 app.get("/api/health", (_req, res) =>
   res.json({ status: "ok", message: "FinTrack API v2 running" })
